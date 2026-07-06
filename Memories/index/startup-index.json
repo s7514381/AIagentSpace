@@ -30,7 +30,12 @@
     "When matching records are similarly relevant or conflict, prefer newer active records by updatedAt, createdAt, then timestamp.",
     "Read raw only when index hits are insufficient.",
     "If any required document output is mojibake/garbled, it does not count as read; fix encoding or re-read as UTF-8 before acting.",
-    "End every chat by writing a task log to Memories/logs/{taskName}_{yyyyMMddHHmmss}.md and updating logs/index.md."
+    "End every chat by writing a task log to Memories/logs/{taskName}_{yyyyMMddHHmmss}.md and updating logs/index.md.",
+    "Every attempt_completion MUST generate a memoryName (format: memory_xxxxx_YYYYMMDD) and pass it to TaskComplete Hook.",
+    "The Hook validates memoryName prefix 'memory_'; if invalid, memory write is rejected.",
+    "TaskStart Hook generates a readId (format: readId=read_xxxxx_YYYYMMDD) in contextModification.",
+    "AI MUST include the readId in its first response to confirm memory was read.",
+    "If AI does not return readId, user should require AI to re-read memory."
   ],
   "retrievalOrdering": {
     "first": "task relevance and project match",

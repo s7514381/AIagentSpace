@@ -2,6 +2,7 @@
 # Auto-save conversation memory, update indexes, write task log
 # Input: stdin JSON { task, result, files, mode }
 # Output: { cancel, contextModification, errorMessage }
+# Optimized: v2 - Auto-naming for UnnamedTask, auto-validation, memoryName enforcement
 
 $agentSpace = "C:\Users\s7514\source\repos\AIagentSpace"
 $memoriesRoot = "$agentSpace\Memories"
@@ -17,11 +18,29 @@ try {
     $rawInput = $input | Out-String
     $inputObj = if ($rawInput) { try { $rawInput | ConvertFrom-Json } catch { $null } } else { $null }
     
-    # ---- Step 1: Extract task info ----
-    $taskName = if ($inputObj -and $inputObj.task) { $inputObj.task } else { "UnnamedTask" }
+    # ---- Step 1: Extract task info with auto-naming for UnnamedTask ----
+    $taskNameRaw = if ($inputObj -and $inputObj.task) { $inputObj.task } else { "" }
     $taskResult = if ($inputObj -and $inputObj.result) { $inputObj.result } else { "" }
     $taskFiles = if ($inputObj -and $inputObj.files) { $inputObj.files } else { @() }
     $taskMode = if ($inputObj -and $inputObj.mode) { $inputObj.mode } else { "" }
+    
+    # Auto-name if UnnamedTask or empty
+    $taskName = $taskNameRaw
+    if ([string]::IsNullOrWhiteSpace($taskName) -or $taskName -match "UnnamedTask") {
+        $fallbackKeywords = @()
+        if ($taskResult) {
+            $kwMatches = [regex]::Matches($taskResult, '[A-Za-z][A-Za-z0-9]+')
+            foreach ($m in $kwMatches) {
+                if ($m.Value.Length -ge 2) { $fallbackKeywords += $m.Value }
+            }
+        }
+        $fallbackKeywords = $fallbackKeywords | Select-Object -Unique | Select-Object -First 3
+        if ($fallbackKeywords.Count -ge 2) {
+            $taskName = $fallbackKeywords -join '_'
+        } else {
+            $taskName = "task_$timestamp"
+        }
+    }
     
     # Extract project hint from task name
     $projectHint = ""
@@ -29,7 +48,9 @@ try {
         $projectHint = $matches[1]
     }
     
-    $memId = "mem-$timestamp-$(Get-Random -Maximum 999)"
+    # Generate memoryName in format: memory_xxxxx_YYYYMMDD
+    $randomSuffix = -join ((65..90) + (97..122) | Get-Random -Count 5 | ForEach-Object { [char]$_ })
+    $memId = "memory_${randomSuffix}_$(Get-Date -Format 'yyyyMMdd')"
     
     # ---- Step 2: Write raw memory ----
     $rawFileName = "$timestamp`_session.json"
@@ -150,6 +171,7 @@ $taskResult
 - Importance: $importance
 - Keywords: $($keywords -join ', ')
 - Index: $jsonlTarget
+- memoryName: $memId
 "@
     
     $logContent | Out-File -FilePath $logFilePath -Encoding UTF8
@@ -246,7 +268,19 @@ Last Updated: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')
     
     $newIndex | Out-File -FilePath $indexPath -Encoding UTF8
     
-    # ---- Step 7: Return summary ----
+    # ---- Step 7: Auto-run validation ----
+    $validationResult = ""
+    $validateScript = "$agentSpace\Memories\scripts\validate-memory.ps1"
+    if (Test-Path $validateScript) {
+        try {
+            $validationOutput = & $validateScript 2>&1
+            $validationResult = $validationOutput | Out-String
+        } catch {
+            $validationResult = "[Validation Error] $($_.Exception.Message)"
+        }
+    }
+    
+    # ---- Step 8: Return summary with memoryName ----
     $contextModification = @"
 [Memory Auto-Saved]
 - Task: $taskName
@@ -257,7 +291,12 @@ Last Updated: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')
 - Raw Session: $rawFilePath
 - Task Log: $logFilePath
 - Index Updated: $jsonlTarget
+- memoryName: $memId
 "@
+    
+    if ($validationResult) {
+        $contextModification += "`n[Validation Result]`n$validationResult"
+    }
     
     @{
         cancel = $false
