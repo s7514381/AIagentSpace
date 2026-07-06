@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AI Agent Space Summary Index Record",
+  "type": "object",
+  "required": [
+    "id",
+    "type",
+    "status",
+    "createdAt",
+    "project",
+    "summary",
+    "keywords",
+    "importance"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "conversation",
+        "preference",
+        "project_fact",
+        "decision",
+        "bug_fix",
+        "principle",
+        "todo",
+        "warning",
+        "incident"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "superseded",
+        "unverified",
+        "archived",
+        "purge_candidate"
+      ]
+    },
+    "createdAt": {
+      "type": "string"
+    },
+    "project": {
+      "type": "string",
+      "minLength": 1
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "keywords": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "importance": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "rawPath": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "replacedBy": {
+      "type": "string"
+    },
+    "supersededAt": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": true
+}

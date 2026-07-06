@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "updatedAt": "2026-06-22T15:00:00+08:00",
+  "user": {
+    "language": "zh-TW",
+    "responseStyle": "direct, pragmatic, actionable"
+  },
+  "memory": {
+    "root": "C:\\Users\\s7514\\Desktop\\AI Agent Space\\Memories",
+    "bootstrap": "C:\\Users\\s7514\\Desktop\\AI Agent Space\\AGENT_BOOTSTRAP.md",
+    "mainGuide": "C:\\Users\\s7514\\Desktop\\AI Agent Space\\主要引導.md",
+    "memorySpec": "C:\\Users\\s7514\\Desktop\\AI Agent Space\\記憶系統規格.md",
+    "developmentPrinciples": "C:\\Users\\s7514\\Desktop\\AI Agent Space\\DEVELOPMENT_PRINCIPLES.md",
+    "writebackPolicy": "Evaluate every chat; write formal index when importance >= 0.7.",
+    "startupIndex": "C:\\Users\\s7514\\Desktop\\AI Agent Space\\Memories\\index\\startup-index.json",
+    "retrievalPolicy": "Read startup-index on every task. Read agent profile and preferences only when the startup index is insufficient or memory rules/preferences need detail. Search project memory and JSONL indexes by keywords; raw only when needed."
+  },
+  "projects": [
+    {
+      "name": "SmartExpoIoT",
+      "path": "C:\\Users\\s7514\\source\\repos\\SmartExpoIoT",
+      "agentsFile": "C:\\Users\\s7514\\source\\repos\\SmartExpoIoT\\AGENTS.md",
+      "adaptationFile": "docs\\開發原則.md"
+    }
+  ]
+}

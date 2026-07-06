@@ -1,0 +1,106 @@
+﻿{
+  "version": 1,
+  "updatedAt": "2026-06-22T14:10:00+08:00",
+  "preferences": [
+    {
+      "id": "pref-language-zh-tw",
+      "type": "preference",
+      "status": "active",
+      "summary": "使用者偏好使用繁體中文溝通。",
+      "importance": 0.9,
+      "evidence": "使用者以繁體中文提出需求。"
+    },
+    {
+      "id": "pref-agent-space",
+      "type": "preference",
+      "status": "active",
+      "summary": "AI Agent 的長期資料、記憶與主要引導文件應集中存放在 C:\\Users\\s7514\\Desktop\\AI Agent Space。",
+      "importance": 0.95,
+      "evidence": "使用者明確要求把東西都存放在該資料夾。"
+    },
+    {
+      "id": "pref-project-agents-md",
+      "type": "preference",
+      "status": "active",
+      "summary": "以後開新專案時，如果專案根目錄沒有 AGENTS.md，AI 應主動補上導向 C:\\Users\\s7514\\Desktop\\AI Agent Space\\主要引導.md 的引導文件。",
+      "importance": 0.95,
+      "evidence": "使用者明確要求：以後開新專案，如果沒有這個引導，都請 AI 幫忙補上。"
+    },
+    {
+      "id": "pref-smartexpo-read-project-dev-principles",
+      "type": "preference",
+      "status": "superseded",
+      "summary": "處理 SmartExpoIoT 專案任務時，每次聊天開始應先讀 AGENT_BOOTSTRAP.md 與本 repo 的 AGENTS.md，再讀 Memories/index/preferences.json 並用關鍵字搜尋 Memories/index/*.jsonl；只有任務涉及程式碼、架構、資料、權限、安全或驗證時才讀 DEVELOPMENT_PRINCIPLES.md，並依需要讀 docs\\開發原則.md 的摘要、相關章節或全文。每次聊天結束前仍必須評估是否寫回長期記憶。",
+      "importance": 0.95,
+      "evidence": "使用者要求：請在 md 裡面提及每次聊天都要看 docs\\開發原則.md；後續又明確指出寫回記憶這件事情是每次聊天都要做。",
+      "replacedBy": "decision-20260622-bounded-startup-index",
+      "supersededAt": "2026-06-24T09:51:27+08:00"
+    },
+    {
+      "id": "pref-memory-writeback-every-chat-global",
+      "type": "preference",
+      "status": "active",
+      "summary": "每次聊天結束前都必須評估是否寫回長期記憶；importance >= 0.7 的新偏好、專案事實、技術決策、bug 修復、踩雷紀錄或會影響未來處理方式的規則，必須寫回 C:\\Users\\s7514\\Desktop\\AI Agent Space\\Memories 的正式索引。importance < 0.7 的資訊可依後續價值寫入 inbox、raw 或不保存。這是跨專案全域規則。",
+      "importance": 0.99,
+      "evidence": "使用者指出每次聊天都要評估寫回記憶；後續要求優化主要引導，採納 importance >= 0.7 才必寫正式索引的門檻。"
+    },
+    {
+      "id": "pref-agent-space-main-guide-file-name",
+      "type": "preference",
+      "status": "active",
+      "summary": "AI Agent Space 的主要引導文件已由 DEVELOPMENT_PRINCIPLES.md 改名為 C:\\Users\\s7514\\Desktop\\AI Agent Space\\主要引導.md，未來入口與新專案 AGENTS.md 應指向此檔。",
+      "importance": 0.95,
+      "evidence": "使用者要求將 C:\\Users\\s7514\\Desktop\\AI Agent Space\\DEVELOPMENT_PRINCIPLES.md 改成類似「主要」的名稱，以便稍後在同資料夾新增開發原則。"
+    },
+    {
+      "id": "pref-global-development-principles-layering",
+      "type": "preference",
+      "status": "active",
+      "summary": "AI Agent Space 採用文件分層：主要引導.md 管記憶與全域工作空間，DEVELOPMENT_PRINCIPLES.md 管跨專案通用開發原則，各 repo 的 AGENTS.md 指定該專案實際使用的專案適配文件位置；通用文件不能寫死為 docs\\開發原則.md。",
+      "importance": 0.95,
+      "evidence": "使用者要求執行通用開發原則改造，並同步修正 SmartExpoIoT 的專案開發原則。"
+    },
+    {
+      "id": "pref-principle-reading-receipt-required",
+      "type": "preference",
+      "status": "active",
+      "summary": "每次開始任務時，AI 必須先輸出原則讀取回執；新對話、高風險修改、架構調整、DB/權限/安全異動使用完整回執，小型任務可用極簡回執。未回報前不應開始修改檔案。",
+      "importance": 0.98,
+      "evidence": "使用者詢問如何確定 agent 每次執行前都有確實看完原則，並要求執行加入該規則；後續優化時採納分級回執以降低小任務干擾。"
+    },
+    {
+      "id": "pref-project-adaptation-path-not-global-fixed",
+      "type": "preference",
+      "status": "active",
+      "summary": "不是每個專案的開發原則都放在 docs\\開發原則.md；通用層只能要求讀取 repo 的 AGENTS.md，並依 AGENTS.md 指定的位置讀專案適配文件。只有特定專案自己的 AGENTS.md 才能寫死該專案的實際路徑。",
+      "importance": 0.98,
+      "evidence": "使用者提醒：並不是每個專案都是 docs\\開發原則.md，放的位置都不一樣，所以不能在通用 md 檔裡這樣寫。"
+    },
+    {
+      "id": "pref-token-optimized-bootstrap-first",
+      "type": "preference",
+      "status": "superseded",
+      "summary": "為降低每次對話前置 token，AI Agent Space 採用短版必讀、長版按需讀策略：每次任務先讀 AGENT_BOOTSTRAP.md、repo 的 AGENTS.md、agent-profile.json、preferences.json，並用關鍵字搜尋 projects/<project-key>/*.jsonl 與 index/*.jsonl；主要引導.md、記憶系統規格.md、DEVELOPMENT_PRINCIPLES.md 與專案適配文件全文只在任務需要時讀。",
+      "importance": 0.97,
+      "evidence": "使用者要求確認每次對話 token 是否太大並執行優化。",
+      "replacedBy": "decision-20260622-bounded-startup-index",
+      "supersededAt": "2026-06-24T09:51:27+08:00"
+    },
+    {
+      "id": "pref-garbled-output-not-read",
+      "type": "preference",
+      "status": "active",
+      "summary": "讀取中文文件時若 PowerShell 或任何工具輸出出現亂碼，不能視為已讀；必須先修正編碼或以 UTF-8 重新讀取並確認內容可辨識，才能開始判斷、修改或回報。",
+      "importance": 0.99,
+      "evidence": "使用者指出 PowerShell 輸出亂碼導致多次漏讀 docs\\開發原則.md 規則，要求根除此問題。"
+    },
+    {
+      "id": "pref-powershell-utf8-profile",
+      "type": "environment",
+      "status": "active",
+      "summary": "此 Windows 環境已在 C:\\Users\\s7514\\Documents\\WindowsPowerShell\\profile.ps1 設定 UTF-8 防護：Console Input/OutputEncoding、$OutputEncoding、Get-Content 與 Select-String 預設 UTF-8，用於避免 Windows PowerShell 5.1 讀 UTF-8 無 BOM 中文 Markdown 亂碼。",
+      "importance": 0.92,
+      "evidence": "已驗證新 PowerShell session 不加 -Encoding utf8 也能正常讀取 docs\\開發原則.md，Select-String 可正常搜尋中文規則。"
+    }
+  ]
+}

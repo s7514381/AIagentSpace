@@ -1,0 +1,60 @@
+﻿{
+  "version": 1,
+  "language": "zh-TW",
+  "root": "C:\\Users\\s7514\\Desktop\\AI Agent Space",
+  "memoryRoot": "C:\\Users\\s7514\\Desktop\\AI Agent Space\\Memories",
+  "writePolicy": {
+    "saveRawConversation": true,
+    "createSummaryIndex": true,
+    "storeSensitiveSecrets": false,
+    "defaultStatus": "active"
+  },
+  "importance": {
+    "preference": 0.9,
+    "project_fact": 0.85,
+    "decision": 0.9,
+    "bug_fix": 0.8,
+    "principle": 0.95,
+    "conversation": 0.45,
+    "todo": 0.75,
+    "warning": 0.9
+  },
+  "retrieval": {
+    "readStartupIndexFirst": true,
+    "readPreferencesFirst": false,
+    "readPreferencesWhenNeeded": true,
+    "readAgentProfileWhenNeeded": true,
+    "searchSummaryBeforeRaw": true,
+    "preferRecentChanges": true,
+    "recencyDateFields": [
+      "updatedAt",
+      "createdAt",
+      "timestamp"
+    ],
+    "ordering": [
+      "taskRelevance",
+      "status",
+      "recency",
+      "importance"
+    ],
+    "maxSummaryResults": 10,
+    "maxRawReads": 5,
+    "mandatoryStartupFiles": [
+      "AGENT_BOOTSTRAP.md",
+      "repo AGENTS.md",
+      "Memories/index/startup-index.json"
+    ]
+  },
+  "statusValues": [
+    "active",
+    "superseded",
+    "unverified",
+    "archived",
+    "purge_candidate"
+  ],
+  "validation": {
+    "warnWhenActiveMemoryMentionsOldMandatoryPreferencesRead": true,
+    "warnWhenJsonlMissingCoreFields": true,
+    "warnWhenStartupIndexExceedsHardMaxTokens": true
+  }
+}
