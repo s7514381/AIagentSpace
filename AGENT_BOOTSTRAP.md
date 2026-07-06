@@ -13,18 +13,21 @@
 
 若超過預算，優先壓縮 `startup-index.json` 與 `logs/index.md`，不刪除 `AGENT_BOOTSTRAP.md`、`主要引導.md` 或 `AGENTS.md` 必要規則。
 
-## 讀取順序
+## 讀取順序（Hook 自動執行）
+
+> **TaskStart Hook**（`C:\Users\s7514\Documents\Cline\Hooks\TaskStart.ps1`）會自動執行以下步驟，AI 不需要手動操作。
 
 0. 讀 `主要引導.md`，取得 AI Agent Space 總入口與文件地圖。
 1. 讀本文件。
 2. 讀目前 repo 的 `AGENTS.md`，確認專案適配文件位置。
-3. 若存在，讀 `Memories/index/startup-index.json`，取得高頻偏好、路徑與 token 預算。
-4. 讀 `Memories/logs/index.md`，掃描最新前 10 筆任務日誌（累積至 3000 tokens），取得近期任務脈絡。
-5. 只有 `startup-index.json` 不足、需要偏好細節或要修改記憶規則時，才讀 `Memories/index/agent-profile.json` 與 `Memories/index/preferences.json`。
-6. 依任務關鍵字搜尋 `Memories/projects/<project-key>/*.jsonl` 與 `Memories/index/*.jsonl`，只讀最相關摘要，通常限制 5 到 10 筆；相關度接近時，越近期的 `updatedAt`、`createdAt` 或 `timestamp` 越優先。
-7. 任務涉及程式碼、架構、資料、權限或驗證時，讀 `DEVELOPMENT_PRINCIPLES.md`。
-8. 依 `AGENTS.md` 指示讀專案適配文件；若任務很小，先讀摘要或相關章節，必要時再讀全文。
-9. 只有摘要不足時，才依 `rawPath` 讀 `Memories/raw/**`。
+3. **Hook 自動讀取** `Memories/index/startup-index.json`，取得高頻偏好、路徑與 token 預算。
+4. **Hook 自動讀取** `Memories/logs/index.md`，掃描最新前 10 筆任務日誌（累積至 3000 tokens），取得近期任務脈絡。
+5. **Hook 自動萃取關鍵字**：從任務描述中取出英文專有名詞，搜尋所有 JSONL 索引。
+6. **Hook 自動回傳 contextModification**：包含關鍵字、相關記憶摘要（前 8 筆）、近期任務日誌。
+7. 只有 `startup-index.json` 不足、需要偏好細節或要修改記憶規則時，才讀 `Memories/index/agent-profile.json` 與 `Memories/index/preferences.json`。
+8. 任務涉及程式碼、架構、資料、權限或驗證時，讀 `DEVELOPMENT_PRINCIPLES.md`。
+9. 依 `AGENTS.md` 指示讀專案適配文件；若任務很小，先讀摘要或相關章節，必要時再讀全文。
+10. 只有摘要不足時，才依 `rawPath` 讀 `Memories/raw/**`。
 
 ## 必守規則
 

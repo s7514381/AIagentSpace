@@ -13,14 +13,14 @@
     "responseStyle": "direct, pragmatic, actionable"
   },
   "paths": {
-    "agentSpace": "C:\\Users\\s7514\\Desktop\\AI Agent Space",
-    "memories": "C:\\Users\\s7514\\Desktop\\AI Agent Space\\Memories",
-    "bootstrap": "C:\\Users\\s7514\\Desktop\\AI Agent Space\\AGENT_BOOTSTRAP.md",
-    "mainGuide": "C:\\Users\\s7514\\Desktop\\AI Agent Space\\主要引導.md",
-    "memorySpec": "C:\\Users\\s7514\\Desktop\\AI Agent Space\\記憶系統規格.md",
-    "developmentPrinciples": "C:\\Users\\s7514\\Desktop\\AI Agent Space\\DEVELOPMENT_PRINCIPLES.md",
-    "logsIndex": "C:\\Users\\s7514\\Desktop\\AI Agent Space\\Memories\\logs\\index.md",
-    "logsDir": "C:\\Users\\s7514\\Desktop\\AI Agent Space\\Memories\\logs"
+    "agentSpace": "C:\\Users\\s7514\\source\\repos\\AIagentSpace",
+    "memories": "C:\\Users\\s7514\\source\\repos\\AIagentSpace\\Memories",
+    "bootstrap": "C:\\Users\\s7514\\source\\repos\\AIagentSpace\\AGENT_BOOTSTRAP.md",
+    "mainGuide": "C:\\Users\\s7514\\source\\repos\\AIagentSpace\\主要引導.md",
+    "memorySpec": "C:\\Users\\s7514\\source\\repos\\AIagentSpace\\記憶系統規格.md",
+    "developmentPrinciples": "C:\\Users\\s7514\\source\\repos\\AIagentSpace\\DEVELOPMENT_PRINCIPLES.md",
+    "logsIndex": "C:\\Users\\s7514\\source\\repos\\AIagentSpace\\Memories\\logs\\index.md",
+    "logsDir": "C:\\Users\\s7514\\source\\repos\\AIagentSpace\\Memories\\logs"
   },
   "startupRules": [
     "Read AGENT_BOOTSTRAP.md, repo AGENTS.md, then this file.",
