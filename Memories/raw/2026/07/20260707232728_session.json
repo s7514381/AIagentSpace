@@ -1,0 +1,21 @@
+﻿{
+    "schemaVersion":  1,
+    "sessionId":  "session-20260707232728",
+    "memoryName":  "memory_XPywN_20260707",
+    "createdAt":  "2026-07-07 23:27:28",
+    "source":  "TaskComplete Hook",
+    "trustModel":  "ai_result_untrusted_observed_evidence_preferred",
+    "task":  {
+                 "prompt":  "UnnamedTask",
+                 "mode":  "",
+                 "aiReportedFiles":  {
+
+                                     }
+             },
+    "aiCandidate":  {
+                        "result":  "",
+                        "aiProvidedMemoryName":  "",
+                        "trusted":  false,
+                        "status":  "candidate"
+                    }
+}

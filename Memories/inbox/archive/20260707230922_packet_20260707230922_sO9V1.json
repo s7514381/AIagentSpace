@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "packetId": "packet_20260707230922_sO9V1",
+  "memoryName": "memory_wIOkD_20260707",
+  "createdAt": "2026-07-07 23:09:22",
+  "status": "consolidated",
+  "workspace": "C:\\Users\\s7514\\source\\repos\\AIagentSpace",
+  "task": {
+    "prompt": "UnnamedTask",
+    "mode": "",
+    "startedAt": "2026-07-07 23:08:45",
+    "completedAt": "2026-07-07 23:09:22"
+  },
+  "evidence": {
+    "level": "observed",
+    "sources": [
+      "TaskStart snapshot",
+      "git rev-parse HEAD",
+      "git status --short",
+      "git diff --stat",
+      "git diff --name-only",
+      "git diff --cached --stat",
+      "git diff --cached --name-only"
+    ],
+    "startSnapshotPath": "Memories/runtime/current-task-start.json",
+    "git": {
+      "branch": "main",
+      "headBefore": "0391923807312e648fe57278a2f28af941511d3d",
+      "headAfter": "0391923807312e648fe57278a2f28af941511d3d",
+      "statusBefore": "M Cline/Hooks/TaskComplete.ps1\n M Cline/Hooks/TaskStart.ps1\n M Memories/config/memory-rules.json\n M Memories/index/startup-index.json\n M Memories/logs/index.md\n M Memories/scripts/validate-memory.ps1\n?? Memories/config/consolidation-policy.json\n?? Memories/inbox/\n?? Memories/logs/UnnamedTask_20260707230423.md\n?? Memories/logs/UnnamedTask_20260707230449.md\n?? Memories/logs/UnnamedTask_20260707230519.md\n?? Memories/logs/UnnamedTask_20260707230550.md\n?? Memories/logs/UnnamedTask_20260707230814.md\n?? Memories/raw/2026/07/20260707230423_session.json\n?? Memories/raw/2026/07/20260707230449_session.json\n?? Memories/raw/2026/07/20260707230519_session.json\n?? Memories/raw/2026/07/20260707230550_session.json\n?? Memories/raw/2026/07/20260707230814_session.json\n?? Memories/runtime/\n?? Memories/templates/semantic-consolidation-task.md",
+      "statusAfter": "M Cline/Hooks/TaskComplete.ps1\n M Cline/Hooks/TaskStart.ps1\n M Memories/config/memory-rules.json\n M Memories/index/startup-index.json\n M Memories/logs/index.md\n M Memories/scripts/validate-memory.ps1\n?? Memories/config/consolidation-policy.json\n?? Memories/inbox/\n?? Memories/logs/UnnamedTask_20260707230423.md\n?? Memories/logs/UnnamedTask_20260707230449.md\n?? Memories/logs/UnnamedTask_20260707230519.md\n?? Memories/logs/UnnamedTask_20260707230550.md\n?? Memories/logs/UnnamedTask_20260707230814.md\n?? Memories/raw/2026/07/20260707230423_session.json\n?? Memories/raw/2026/07/20260707230449_session.json\n?? Memories/raw/2026/07/20260707230519_session.json\n?? Memories/raw/2026/07/20260707230550_session.json\n?? Memories/raw/2026/07/20260707230814_session.json\n?? Memories/runtime/\n?? Memories/templates/semantic-consolidation-task.md",
+      "diffStat": "Cline/Hooks/TaskComplete.ps1         | 563 ++++++++++++++++-------------------\n Cline/Hooks/TaskStart.ps1            | 134 ++++++++-\n Memories/config/memory-rules.json    |  20 +-\n Memories/index/startup-index.json    |  81 ++---\n Memories/logs/index.md               | 140 +++++----\n Memories/scripts/validate-memory.ps1 |  62 ++++\n 6 files changed, 566 insertions(+), 434 deletions(-)",
+      "changedFiles": [
+        "Cline/Hooks/TaskComplete.ps1",
+        "Cline/Hooks/TaskStart.ps1",
+        "Memories/config/memory-rules.json",
+        "Memories/index/startup-index.json",
+        "Memories/logs/index.md",
+        "Memories/scripts/validate-memory.ps1"
+      ],
+      "cachedDiffStat": "",
+      "cachedChangedFiles": {},
+      "commandsOk": {
+        "head": true,
+        "branch": true,
+        "status": true,
+        "diffStat": true,
+        "diffNameOnly": true,
+        "cachedStat": true,
+        "cachedNameOnly": true
+      }
+    }
+  },
+  "aiCandidate": {
+    "resultPreview": "",
+    "aiReportedFiles": {},
+    "aiProvidedMemoryName": "",
+    "trusted": false,
+    "status": "candidate"
+  },
+  "ruleBasedTags": [
+    "pending_review",
+    "code-change-observed",
+    "hook-or-memory-file-change"
+  ],
+  "review": {
+    "needsSemanticReview": true,
+    "recommendedAction": "evaluate_for_long_term_memory",
+    "reason": "TaskComplete Hook is non-semantic; promote only after semantic consolidation with evidence review."
+  },
+  "rawPath": "Memories/raw/2026/07/20260707230922_session.json",
+  "reviewedAt": "2026-07-07 23:18:10",
+  "reviewResult": {
+    "reviewedBy": "semantic_consolidation_task",
+    "decision": "promoted_to_formal_memory",
+    "reason": "Latest packet in repeated evidence sequence promoted as source for the evidence-first semantic consolidation decision."
+  },
+  "promotedTo": [
+    "Memories/index/decisions.jsonl#decision-20260707-evidence-first-semantic-consolidation"
+  ]
+}

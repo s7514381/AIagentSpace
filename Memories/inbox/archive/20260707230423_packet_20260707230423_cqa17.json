@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "packetId": "packet_20260707230423_cqa17",
+  "memoryName": "memory_5Xrpy_20260707",
+  "createdAt": "2026-07-07 23:04:23",
+  "status": "archived",
+  "workspace": "C:\\Users\\s7514\\source\\repos\\AIagentSpace",
+  "task": {
+    "prompt": "UnnamedTask",
+    "mode": "",
+    "startedAt": null,
+    "completedAt": "2026-07-07 23:04:23"
+  },
+  "evidence": {
+    "level": "observed",
+    "sources": [
+      "TaskStart snapshot",
+      "git rev-parse HEAD",
+      "git status --short",
+      "git diff --stat",
+      "git diff --name-only",
+      "git diff --cached --stat",
+      "git diff --cached --name-only"
+    ],
+    "startSnapshotPath": null,
+    "git": {
+      "branch": "main",
+      "headBefore": null,
+      "headAfter": "0391923807312e648fe57278a2f28af941511d3d",
+      "statusBefore": null,
+      "statusAfter": "M Cline/Hooks/TaskComplete.ps1\n M Cline/Hooks/TaskStart.ps1\n M Memories/config/memory-rules.json\n M Memories/index/startup-index.json\n M Memories/scripts/validate-memory.ps1\n?? Memories/config/consolidation-policy.json\n?? Memories/templates/semantic-consolidation-task.md",
+      "diffStat": "Cline/Hooks/TaskComplete.ps1         | 563 ++++++++++++++++-------------------\n Cline/Hooks/TaskStart.ps1            | 132 +++++++-\n Memories/config/memory-rules.json    |  20 +-\n Memories/index/startup-index.json    |  81 ++---\n Memories/scripts/validate-memory.ps1 |  62 ++++\n 5 files changed, 490 insertions(+), 368 deletions(-)",
+      "changedFiles": [
+        "Cline/Hooks/TaskComplete.ps1",
+        "Cline/Hooks/TaskStart.ps1",
+        "Memories/config/memory-rules.json",
+        "Memories/index/startup-index.json",
+        "Memories/scripts/validate-memory.ps1"
+      ],
+      "cachedDiffStat": "",
+      "cachedChangedFiles": {},
+      "commandsOk": {
+        "head": true,
+        "branch": true,
+        "status": true,
+        "diffStat": true,
+        "diffNameOnly": true,
+        "cachedStat": true,
+        "cachedNameOnly": true
+      }
+    }
+  },
+  "aiCandidate": {
+    "resultPreview": "",
+    "aiReportedFiles": {},
+    "aiProvidedMemoryName": "",
+    "trusted": false,
+    "status": "candidate"
+  },
+  "ruleBasedTags": [
+    "pending_review",
+    "code-change-observed",
+    "hook-or-memory-file-change"
+  ],
+  "review": {
+    "needsSemanticReview": true,
+    "recommendedAction": "evaluate_for_long_term_memory",
+    "reason": "TaskComplete Hook is non-semantic; promote only after semantic consolidation with evidence review."
+  },
+  "rawPath": "Memories/raw/2026/07/20260707230423_session.json",
+  "reviewedAt": "2026-07-07 23:18:10",
+  "reviewResult": {
+    "reviewedBy": "semantic_consolidation_task",
+    "decision": "archived_duplicate_evidence",
+    "reason": "Duplicate packet from the same repeated UnnamedTask evidence sequence; retained only as corroborating evidence and not independently promoted."
+  },
+  "promotedTo": []
+}

@@ -1,0 +1,27 @@
+﻿{
+    "schemaVersion":  1,
+    "startedAt":  "2026-07-07 23:27:35",
+    "readId":  "read_PpTrk_20260707",
+    "workspace":  "C:\\Users\\s7514\\source\\repos\\AIagentSpace",
+    "taskPrompt":  "",
+    "git":  {
+                "head":  "0391923807312e648fe57278a2f28af941511d3d",
+                "branch":  "main",
+                "statusShort":  "M Cline/Hooks/TaskComplete.ps1\n M Cline/Hooks/TaskStart.ps1\n M Memories/config/memory-rules.json\n M Memories/index/decisions.jsonl\n M Memories/index/startup-index.json\n M Memories/logs/index.md\n M Memories/scripts/validate-memory.ps1\n?? Memories/config/consolidation-policy.json\n?? Memories/inbox/\n?? Memories/logs/UnnamedTask_20260707230423.md\n?? Memories/logs/UnnamedTask_20260707230449.md\n?? Memories/logs/UnnamedTask_20260707230519.md\n?? Memories/logs/UnnamedTask_20260707230550.md\n?? Memories/logs/UnnamedTask_20260707230814.md\n?? Memories/logs/UnnamedTask_20260707230922.md\n?? Memories/logs/UnnamedTask_20260707231941.md\n?? Memories/logs/UnnamedTask_20260707232002.md\n?? Memories/logs/UnnamedTask_20260707232222.md\n?? Memories/logs/UnnamedTask_20260707232244.md\n?? Memories/logs/UnnamedTask_20260707232353.md\n?? Memories/logs/UnnamedTask_20260707232728.md\n?? Memories/raw/2026/07/20260707230423_session.json\n?? Memories/raw/2026/07/20260707230449_session.json\n?? Memories/raw/2026/07/20260707230519_session.json\n?? Memories/raw/2026/07/20260707230550_session.json\n?? Memories/raw/2026/07/20260707230814_session.json\n?? Memories/raw/2026/07/20260707230922_session.json\n?? Memories/raw/2026/07/20260707231941_session.json\n?? Memories/raw/2026/07/20260707232002_session.json\n?? Memories/raw/2026/07/20260707232222_session.json\n?? Memories/raw/2026/07/20260707232244_session.json\n?? Memories/raw/2026/07/20260707232353_session.json\n?? Memories/raw/2026/07/20260707232728_session.json\n?? Memories/runtime/\n?? Memories/templates/semantic-consolidation-task.md",
+                "commandsOk":  {
+                                   "head":  true,
+                                   "branch":  true,
+                                   "status":  true
+                               }
+            },
+    "inbox":  {
+                  "pendingCount":  6,
+                  "totalSizeKb":  40.8,
+                  "oldestPendingAt":  "2026-07-07 23:19:41",
+                  "oldestAgeDays":  0.01,
+                  "level":  "notice",
+                  "reasons":  [
+                                  "pendingCount \u003e= 5"
+                              ]
+              }
+}

@@ -1,13 +1,15 @@
 ﻿{
   "version": 1,
   "language": "zh-TW",
-  "root": "C:\\Users\\s7514\\Desktop\\AI Agent Space",
-  "memoryRoot": "C:\\Users\\s7514\\Desktop\\AI Agent Space\\Memories",
+  "root": "C:\\Users\\s7514\\source\\repos\\AIagentSpace",
+  "memoryRoot": "C:\\Users\\s7514\\source\\repos\\AIagentSpace\\Memories",
   "writePolicy": {
     "saveRawConversation": true,
-    "createSummaryIndex": true,
+    "createSummaryIndex": false,
+    "writeTaskCompleteToInbox": true,
+    "promoteStableMemoryOnlyAfterSemanticReview": true,
     "storeSensitiveSecrets": false,
-    "defaultStatus": "active"
+    "defaultStatus": "pending_review"
   },
   "importance": {
     "preference": 0.9,
@@ -50,11 +52,17 @@
     "superseded",
     "unverified",
     "archived",
-    "purge_candidate"
+    "purge_candidate",
+    "pending_review",
+    "consolidated",
+    "rejected",
+    "needs_more_evidence"
   ],
   "validation": {
     "warnWhenActiveMemoryMentionsOldMandatoryPreferencesRead": true,
     "warnWhenJsonlMissingCoreFields": true,
-    "warnWhenStartupIndexExceedsHardMaxTokens": true
+    "warnWhenStartupIndexExceedsHardMaxTokens": true,
+    "validateInboxPackets": true,
+    "requireEvidenceForFormalMemory": false
   }
 }

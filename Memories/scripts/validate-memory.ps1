@@ -12,6 +12,14 @@ $validStatuses = @(
   "purge_candidate"
 )
 
+$validInboxStatuses = @(
+  "pending_review",
+  "consolidated",
+  "archived",
+  "rejected",
+  "needs_more_evidence"
+)
+
 $parseErrors = New-Object System.Collections.Generic.List[string]
 $warnings = New-Object System.Collections.Generic.List[string]
 
@@ -63,6 +71,36 @@ function Test-MemoryRecord {
 
     if ($oldMandatoryPreferenceRead) {
       Add-ParseError "$Source active record still mentions old mandatory preferences/profile startup read"
+    }
+  }
+}
+
+function Test-InboxPacket {
+  param(
+    [object]$Packet,
+    [string]$Source
+  )
+
+  foreach ($field in @("schemaVersion", "packetId", "memoryName", "createdAt", "status", "task", "evidence", "aiCandidate", "review")) {
+    if (-not $Packet.PSObject.Properties.Name.Contains($field)) {
+      Add-Warning "$Source missing inbox packet field: $field"
+    }
+  }
+
+  if ($Packet.PSObject.Properties.Name.Contains("status") -and
+      $validInboxStatuses -notcontains [string]$Packet.status) {
+    Add-ParseError "$Source invalid inbox packet status: $($Packet.status)"
+  }
+
+  if ($Packet.PSObject.Properties.Name.Contains("aiCandidate")) {
+    if ($Packet.aiCandidate.PSObject.Properties.Name.Contains("trusted") -and $Packet.aiCandidate.trusted -ne $false) {
+      Add-ParseError "$Source aiCandidate.trusted must be false"
+    }
+  }
+
+  if ($Packet.PSObject.Properties.Name.Contains("review")) {
+    if (-not $Packet.review.PSObject.Properties.Name.Contains("needsSemanticReview")) {
+      Add-Warning "$Source review.needsSemanticReview missing"
     }
   }
 }
@@ -148,6 +186,30 @@ if (Test-Path -LiteralPath $memoryRulesPath) {
 
   if (-not $memoryRules.retrieval.PSObject.Properties.Name.Contains("recencyDateFields")) {
     Add-Warning "memory-rules retrieval.recencyDateFields is missing"
+  }
+}
+
+$consolidationPolicyPath = Join-Path $memoryRoot "config\consolidation-policy.json"
+if (Test-Path -LiteralPath $consolidationPolicyPath) {
+  $policy = Get-Content -LiteralPath $consolidationPolicyPath -Raw -Encoding UTF8 | ConvertFrom-Json
+  if ($policy.memoryConsolidationPolicy.autoWriteStableMemory -ne $false) {
+    Add-ParseError "consolidation-policy memoryConsolidationPolicy.autoWriteStableMemory must be false"
+  }
+  if ($policy.memoryConsolidationPolicy.requiresSemanticAgentReview -ne $true) {
+    Add-ParseError "consolidation-policy requiresSemanticAgentReview must be true"
+  }
+}
+
+$inboxPath = Join-Path $memoryRoot "inbox"
+if (Test-Path -LiteralPath $inboxPath) {
+  Get-ChildItem -LiteralPath $inboxPath -File -Filter "*.json" | ForEach-Object {
+    $relative = $_.FullName.Substring($AgentSpaceRoot.Length + 1)
+    try {
+      $packet = Get-Content -LiteralPath $_.FullName -Raw -Encoding UTF8 | ConvertFrom-Json
+      Test-InboxPacket -Packet $packet -Source $relative
+    } catch {
+      Add-ParseError "$relative inbox packet parse failed: $($_.Exception.Message)"
+    }
   }
 }
 

@@ -1,12 +1,12 @@
 {
-  "version": 2,
-  "updatedAt": "2026-06-25T13:35:00+08:00",
-  "purpose": "Mandatory compact startup index.",
+  "version": 3,
+  "updatedAt": "2026-07-07T22:57:00+08:00",
+  "purpose": "Compact mandatory startup index. Keep details in specs, policies, JSONL, or raw.",
   "tokenBudget": {
     "targetMaxTokens": 1200,
     "hardMaxTokens": 1800,
-    "globalLimit": "Total mandatory startup reads must not exceed 5000 tokens (AGENT_BOOTSTRAP.md + repo AGENTS.md + this file + logs/index.md top 10 entries / 3000 tokens max).",
-    "policy": "Keep compact; move details to full indexes or raw."
+    "globalLimit": "Mandatory startup reads <= 5000 tokens total.",
+    "policy": "Do not expand this file with full procedures. Link to detailed files instead."
   },
   "user": {
     "language": "zh-TW",
@@ -15,66 +15,39 @@
   "paths": {
     "agentSpace": "C:\\Users\\s7514\\source\\repos\\AIagentSpace",
     "memories": "C:\\Users\\s7514\\source\\repos\\AIagentSpace\\Memories",
-    "bootstrap": "C:\\Users\\s7514\\source\\repos\\AIagentSpace\\AGENT_BOOTSTRAP.md",
-    "mainGuide": "C:\\Users\\s7514\\source\\repos\\AIagentSpace\\主要引導.md",
-    "memorySpec": "C:\\Users\\s7514\\source\\repos\\AIagentSpace\\記憶系統規格.md",
-    "developmentPrinciples": "C:\\Users\\s7514\\source\\repos\\AIagentSpace\\DEVELOPMENT_PRINCIPLES.md",
-    "logsIndex": "C:\\Users\\s7514\\source\\repos\\AIagentSpace\\Memories\\logs\\index.md",
-    "logsDir": "C:\\Users\\s7514\\source\\repos\\AIagentSpace\\Memories\\logs"
+    "memorySpec": "記憶系統規格.md",
+    "consolidationPolicy": "Memories/config/consolidation-policy.json",
+    "semanticConsolidationTemplate": "Memories/templates/semantic-consolidation-task.md",
+    "logsIndex": "Memories/logs/index.md"
   },
   "startupRules": [
-    "Read AGENT_BOOTSTRAP.md, repo AGENTS.md, then this file.",
-    "Read logs/index.md top 10 entries (up to 3000 tokens) for recent task context.",
-    "Read preferences/profile only when this index is insufficient or memory rules change.",
-    "Search JSONL by task keywords; read only matching lines.",
-    "When matching records are similarly relevant or conflict, prefer newer active records by updatedAt, createdAt, then timestamp.",
-    "Read raw only when index hits are insufficient.",
-    "If any required document output is mojibake/garbled, it does not count as read; fix encoding or re-read as UTF-8 before acting.",
-    "End every chat by writing a task log to Memories/logs/{taskName}_{yyyyMMddHHmmss}.md and updating logs/index.md.",
-    "Every attempt_completion MUST generate a memoryName (format: memory_xxxxx_YYYYMMDD) and pass it to TaskComplete Hook.",
-    "The Hook validates memoryName prefix 'memory_'; if invalid, memory write is rejected.",
-    "TaskStart Hook generates a readId (format: readId=read_xxxxx_YYYYMMDD) in contextModification.",
-    "AI MUST include the readId in its first response to confirm memory was read.",
-    "If AI does not return readId, user should require AI to re-read memory."
+    "Use zh-TW. Be direct, pragmatic, actionable.",
+    "TaskStart may inject readId=read_xxxxx_YYYYMMDD for hook/runtime diagnostics only; AI should not mention it unless explicitly asked.",
+    "Search JSONL by task keywords; read raw only when index hits are insufficient.",
+    "Prefer active records; for close/conflicting matches prefer newer updatedAt, createdAt, timestamp; unverified does not override verified.",
+    "TaskComplete Hook is non-semantic and evidence-first: it writes pending_review packets to Memories/inbox and treats AI output as untrusted candidate.",
+    "Stable memory promotion requires Semantic Consolidation Task with evidence metadata; TaskComplete must not directly promote preferences, decisions, facts, or startup rules.",
+    "TaskStart writes Memories/runtime/current-task-start.json and reports inbox consolidation thresholds from consolidation-policy.json."
   ],
   "retrievalOrdering": {
-    "first": "task relevance and project match",
-    "status": "prefer active; read superseded/archived only for source tracing or when active records are insufficient",
-    "recencyTieBreaker": "for similarly relevant or conflicting records, prefer newer updatedAt, then createdAt, then timestamp",
-    "unverifiedRule": "newer unverified records do not override older verified active records without rechecking",
+    "first": "task relevance + project match",
+    "status": "active first; archived/superseded only for source tracing",
+    "recencyTieBreaker": "updatedAt > createdAt > timestamp",
     "finalTieBreaker": "importance"
   },
-  "environmentRules": [
-    "Windows PowerShell profile C:\\Users\\s7514\\Documents\\WindowsPowerShell\\profile.ps1 sets UTF-8 input/output plus Get-Content/Select-String defaults to prevent Chinese mojibake."
-  ],
   "writebackPolicy": {
-    "evaluateEveryChat": true,
-    "formalIndexThreshold": 0.7,
-    "taskLog": "Always write task log to Memories/logs/; always update logs/index.md."
+    "taskCompleteTarget": "Memories/inbox/*.json pending_review packet",
+    "stableMemoryPromotion": "Only through Semantic Consolidation Task with evidence metadata.",
+    "taskLog": "TaskComplete writes evidence task log and updates Memories/logs/index.md."
   },
   "growthControl": {
     "mandatoryStartupFiles": [
       "AGENT_BOOTSTRAP.md",
       "repo AGENTS.md",
       "Memories/index/startup-index.json",
-      "Memories/logs/index.md (top 10, max 3000 tokens)"
+      "Memories/logs/index.md top entries"
     ],
-    "globalTokenLimit": 5000,
-    "activeIndexPolicy": "Keep active indexes bounded; archive, compact, or supersede old entries.",
-    "searchResultLimit": "Usually top 5 to 10 relevant lines; sort close matches by recency.",
-    "logsIndexCap": "If >100 entries, archive to logs/archive-YYYYHn.md, keep latest 50 in active index."
-  },
-  "projects": [
-    {
-      "name": "SmartExpoIoT",
-      "path": "C:\\Users\\s7514\\source\\repos\\SmartExpoIoT",
-      "agentsFile": "C:\\Users\\s7514\\source\\repos\\SmartExpoIoT\\AGENTS.md",
-      "adaptationFile": "docs\\開發原則.md"
-    },
-    {
-      "name": "innoluxBenefit",
-      "path": "C:\\Users\\s7514\\source\\repos\\innoluxBenefit_FrontEnd",
-      "agentsFile": "C:\\Users\\s7514\\source\\repos\\innoluxBenefit_FrontEnd\\AGENTS.md"
-    }
-  ]
+    "searchResultLimit": "Usually top 5-10 relevant records.",
+    "archivePolicy": "Archive/compact logs and JSONL when active indexes grow too large."
+  }
 }

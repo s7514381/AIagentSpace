@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "updatedAt": "2026-07-07T22:55:00+08:00",
+  "purpose": "Controls when pending evidence packets in Memories/inbox should be reviewed by a semantic consolidation task.",
+  "memoryConsolidationPolicy": {
+    "checkOnTaskStart": true,
+    "silentBelowInboxCount": 5,
+    "recommendAtInboxCount": 10,
+    "stronglyRecommendAtInboxCount": 20,
+    "recommendIfOldestDaysGreaterThan": 3,
+    "recommendIfInboxSizeKbGreaterThan": 500,
+    "autoWriteStableMemory": false,
+    "requiresSemanticAgentReview": true
+  },
+  "trustPolicy": {
+    "taskCompleteHookIsSemantic": false,
+    "aiResultTrustedByDefault": false,
+    "stableMemoryRequiresEvidence": true,
+    "stableMemoryRequiresReview": true,
+    "allowedTaskCompleteStatuses": [
+      "pending_review"
+    ],
+    "allowedFormalMemoryStatuses": [
+      "active",
+      "superseded",
+      "unverified",
+      "archived",
+      "purge_candidate"
+    ]
+  },
+  "promotionRules": {
+    "userExplicitStatement": "May be promoted when source sentence is preserved and reviewed.",
+    "gitObservedChange": "May support project fact or bug_fix only after semantic review.",
+    "aiCandidateSummary": "Never promote directly; use only as a hint during review.",
+    "ruleBasedTags": "Never promote directly; use only for triage."
+  }
+}

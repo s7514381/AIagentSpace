@@ -10,16 +10,29 @@
 > On startup, scan top 10 entries (max 3000 tokens) for recent context.
 > Hard limit: 5000 tokens total (AGENT_BOOTSTRAP.md + startup-index.json + repo AGENTS.md + this index).
 
-Total Tasks: 34
-Last Updated: 2026-07-07 11:00:59
+Total Tasks: 47
+Last Updated: 2026-07-07 23:27:58
 
 ---
 
 ## Recent Tasks
 
 | # | DateTime | Task Name | Log File | Summary |
-|---|----------|-----------|----------|---------|| 34 | 2026-07-07 11:00 | UnnamedTask | UnnamedTask_20260707110059.md |  |
-| 9 | 2026-07-06 13:52 | Fix EventAwardService bug | Fix EventAwardService bug_20260706135247.md | Fixed null reference in DI |
+|---|----------|-----------|----------|---------|
+| 47 | 2026-07-07 23:27 | UnnamedTask | UnnamedTask_20260707232757.md | Evidence packet written to Memories/inbox/20260707232757_packet_20260707232757_PIt2g.json; semantic ... |
+| 46 | 2026-07-07 23:27 | UnnamedTask | UnnamedTask_20260707232728.md | Evidence packet written to Memories/inbox/20260707232728_packet_20260707232728_jdc4u.json; semantic ... |
+| 45 | 2026-07-07 23:23 | UnnamedTask | UnnamedTask_20260707232353.md | Evidence packet written to Memories/inbox/20260707232353_packet_20260707232353_QcWuG.json; semantic ... |
+| 44 | 2026-07-07 23:22 | UnnamedTask | UnnamedTask_20260707232244.md | Evidence packet written to Memories/inbox/20260707232244_packet_20260707232244_OikFa.json; semantic ... |
+| 43 | 2026-07-07 23:22 | UnnamedTask | UnnamedTask_20260707232222.md | Evidence packet written to Memories/inbox/20260707232222_packet_20260707232222_FveC9.json; semantic ... |
+| 42 | 2026-07-07 23:20 | UnnamedTask | UnnamedTask_20260707232002.md | Evidence packet written to Memories/inbox/20260707232002_packet_20260707232002_YP41d.json; semantic ... |
+| 41 | 2026-07-07 23:19 | UnnamedTask | UnnamedTask_20260707231941.md | Evidence packet written to Memories/inbox/20260707231941_packet_20260707231941_emcpG.json; semantic ... |
+| 40 | 2026-07-07 23:09 | UnnamedTask | UnnamedTask_20260707230922.md | Evidence packet written to Memories/inbox/20260707230922_packet_20260707230922_sO9V1.json; semantic ... |
+| 39 | 2026-07-07 23:08 | UnnamedTask | UnnamedTask_20260707230814.md | Evidence packet written to Memories/inbox/20260707230814_packet_20260707230814_Okl8H.json; semantic ... |
+| 38 | 2026-07-07 23:05 | UnnamedTask | UnnamedTask_20260707230550.md | Evidence packet written to Memories/inbox/20260707230550_packet_20260707230550_uL5GX.json; semantic ... |
+| 37 | 2026-07-07 23:05 | UnnamedTask | UnnamedTask_20260707230519.md | Evidence packet written to Memories/inbox/20260707230519_packet_20260707230519_3kPrb.json; semantic ... |
+| 36 | 2026-07-07 23:04 | UnnamedTask | UnnamedTask_20260707230449.md | Evidence packet written to Memories/inbox/20260707230449_packet_20260707230449_LDPN7.json; semantic ... |
+| 35 | 2026-07-07 23:04 | UnnamedTask | UnnamedTask_20260707230423.md | Evidence packet written to Memories/inbox/20260707230423_packet_20260707230423_cqa17.json; semantic ... |
+
 ---
 
 ## Full List
@@ -62,4 +75,16 @@ Last Updated: 2026-07-07 11:00:59
 | 32 | 2026-07-07 10:37 | UnnamedTask | UnnamedTask_20260707103733.md |  |
 | 33 | 2026-07-07 10:50 | UnnamedTask | UnnamedTask_20260707105022.md |  |
 | 34 | 2026-07-07 11:00 | UnnamedTask | UnnamedTask_20260707110059.md |  |
-
+| 35 | 2026-07-07 23:04 | UnnamedTask | UnnamedTask_20260707230423.md | Evidence packet written to Memories/inbox/20260707230423_packet_20260707230423_cqa17.json; semantic ... |
+| 36 | 2026-07-07 23:04 | UnnamedTask | UnnamedTask_20260707230449.md | Evidence packet written to Memories/inbox/20260707230449_packet_20260707230449_LDPN7.json; semantic ... |
+| 37 | 2026-07-07 23:05 | UnnamedTask | UnnamedTask_20260707230519.md | Evidence packet written to Memories/inbox/20260707230519_packet_20260707230519_3kPrb.json; semantic ... |
+| 38 | 2026-07-07 23:05 | UnnamedTask | UnnamedTask_20260707230550.md | Evidence packet written to Memories/inbox/20260707230550_packet_20260707230550_uL5GX.json; semantic ... |
+| 39 | 2026-07-07 23:08 | UnnamedTask | UnnamedTask_20260707230814.md | Evidence packet written to Memories/inbox/20260707230814_packet_20260707230814_Okl8H.json; semantic ... |
+| 40 | 2026-07-07 23:09 | UnnamedTask | UnnamedTask_20260707230922.md | Evidence packet written to Memories/inbox/20260707230922_packet_20260707230922_sO9V1.json; semantic ... |
+| 41 | 2026-07-07 23:19 | UnnamedTask | UnnamedTask_20260707231941.md | Evidence packet written to Memories/inbox/20260707231941_packet_20260707231941_emcpG.json; semantic ... |
+| 42 | 2026-07-07 23:20 | UnnamedTask | UnnamedTask_20260707232002.md | Evidence packet written to Memories/inbox/20260707232002_packet_20260707232002_YP41d.json; semantic ... |
+| 43 | 2026-07-07 23:22 | UnnamedTask | UnnamedTask_20260707232222.md | Evidence packet written to Memories/inbox/20260707232222_packet_20260707232222_FveC9.json; semantic ... |
+| 44 | 2026-07-07 23:22 | UnnamedTask | UnnamedTask_20260707232244.md | Evidence packet written to Memories/inbox/20260707232244_packet_20260707232244_OikFa.json; semantic ... |
+| 45 | 2026-07-07 23:23 | UnnamedTask | UnnamedTask_20260707232353.md | Evidence packet written to Memories/inbox/20260707232353_packet_20260707232353_QcWuG.json; semantic ... |
+| 46 | 2026-07-07 23:27 | UnnamedTask | UnnamedTask_20260707232728.md | Evidence packet written to Memories/inbox/20260707232728_packet_20260707232728_jdc4u.json; semantic ... |
+| 47 | 2026-07-07 23:27 | UnnamedTask | UnnamedTask_20260707232757.md | Evidence packet written to Memories/inbox/20260707232757_packet_20260707232757_PIt2g.json; semantic ... |
