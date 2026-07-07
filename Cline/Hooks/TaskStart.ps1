@@ -2,32 +2,74 @@
 # Read memory indexes, output contextModification for AI to get relevant memories
 # Input: stdin JSON { task, mode, ... }
 # Output: { cancel, contextModification, errorMessage }
-# Optimized: v2 - Added unnamed task warning + duplicate work detection
+# Optimized: v3 - Always inject startup memory + readId + bilingual keyword search
 
 $memoriesRoot = "C:\Users\s7514\source\repos\AIagentSpace\Memories"
+$dateStamp = Get-Date -Format "yyyyMMdd"
+$readSuffix = -join ((48..57 + 65..90 + 97..122) | Get-Random -Count 5 | ForEach-Object { [char]$_ })
+$readId = "read_${readSuffix}_$dateStamp"
+
+function Add-UniqueKeyword {
+    param(
+        [System.Collections.ArrayList]$Target,
+        [string]$Value
+    )
+
+    if (-not [string]::IsNullOrWhiteSpace($Value) -and $Value.Trim().Length -ge 2) {
+        $trimmed = $Value.Trim()
+        if (-not ($Target | Where-Object { $_.ToLower() -eq $trimmed.ToLower() })) {
+            [void]$Target.Add($trimmed)
+        }
+    }
+}
+
+function Truncate-Text {
+    param(
+        [string]$Text,
+        [int]$MaxChars = 6000
+    )
+
+    if ([string]::IsNullOrEmpty($Text)) { return "" }
+    if ($Text.Length -le $MaxChars) { return $Text }
+    return $Text.Substring(0, $MaxChars) + "`n...[truncated by TaskStart Hook]"
+}
 
 try {
     $rawInput = $input | Out-String
-    $inputObj = if ($rawInput) { $rawInput | ConvertFrom-Json } else { $null }
+    $inputObj = if ($rawInput) { try { $rawInput | ConvertFrom-Json } catch { $null } } else { $null }
     
     $taskDescRaw = if ($inputObj -and $inputObj.task) { $inputObj.task } else { "" }
     $taskDesc = $taskDescRaw
     
-    # Extract keywords from task description (English words only)
-    $keywords = @()
+    # Extract keywords from task description (English + Chinese phrases)
+    $keywordList = [System.Collections.ArrayList]::new()
     if ($taskDesc) {
-        $matches = [regex]::Matches($taskDesc, '[A-Za-z][A-Za-z0-9]+')
-        foreach ($m in $matches) {
-            if ($m.Value.Length -ge 2) { $keywords += $m.Value }
+        $englishMatches = [regex]::Matches($taskDesc, '[A-Za-z][A-Za-z0-9]+')
+        foreach ($m in $englishMatches) {
+            Add-UniqueKeyword -Target $keywordList -Value $m.Value
+        }
+
+        $chineseMatches = [regex]::Matches($taskDesc, '[\u4e00-\u9fff]{2,}')
+        foreach ($m in $chineseMatches) {
+            Add-UniqueKeyword -Target $keywordList -Value $m.Value
+
+            # Add short overlapping Chinese chunks to improve substring matching for long prompts.
+            $text = $m.Value
+            if ($text.Length -gt 4) {
+                for ($i = 0; $i -le [Math]::Min($text.Length - 2, 8); $i += 2) {
+                    $len = [Math]::Min(4, $text.Length - $i)
+                    Add-UniqueKeyword -Target $keywordList -Value $text.Substring($i, $len)
+                }
+            }
         }
     }
     
-    $keywords = $keywords | Select-Object -Unique | Select-Object -First 10
+    $keywords = @($keywordList | Select-Object -First 12)
     
     # ---- UnnamedTask warning ----
     $unnamedWarning = ""
     if ([string]::IsNullOrWhiteSpace($taskDescRaw) -or $taskDescRaw -match "UnnamedTask") {
-        $unnamedWarning = "[WARNING] 任務名稱為空或為 UnnamedTask，請提供有意義的任務名稱以確保記憶可追溯性。"
+        $unnamedWarning = "[WARNING] Task name is empty or UnnamedTask. Please provide a meaningful task name for traceable memory retrieval."
     }
     
     # ---- Duplicate work detection ----
@@ -66,11 +108,11 @@ try {
         $dupWarnings = $dupWarnings | Sort-Object matchScore -Descending | Select-Object -First 5
     }
     
-    # Read startup-index.json
+    # Read startup-index.json (mandatory compact startup memory)
     $startupIndexPath = Join-Path $memoriesRoot "index\startup-index.json"
     $startupContent = ""
     if (Test-Path $startupIndexPath) {
-        $startupContent = Get-Content $startupIndexPath -Raw -Encoding UTF8
+        $startupContent = Truncate-Text -Text (Get-Content $startupIndexPath -Raw -Encoding UTF8) -MaxChars 7000
     }
     
     # Read logs/index.md first 40 lines
@@ -84,6 +126,7 @@ try {
     # Search JSONL indexes
     $jsonlResults = @()
     $jsonlFiles = @()
+    $jsonlFiles += Join-Path $memoriesRoot "index\memory-index.jsonl"
     $jsonlFiles += Join-Path $memoriesRoot "index\summaries.jsonl"
     $jsonlFiles += Join-Path $memoriesRoot "index\decisions.jsonl"
     $jsonlFiles += Join-Path $memoriesRoot "index\project-facts.jsonl"
@@ -114,9 +157,9 @@ try {
                             }
                         }
                         
-                        # Match against summary
+                        # Match against summary / memoryName / type / project
                         if (-not $matched -and $entry.summary -and $keywords.Count -gt 0) {
-                            $summaryLower = $entry.summary.ToLower()
+                            $summaryLower = (@($entry.summary, $entry.memoryName, $entry.type, $entry.project) -join ' ').ToLower()
                             foreach ($kw in $keywords) {
                                 if ($summaryLower.Contains($kw.ToLower())) {
                                     $matched = $true
@@ -150,11 +193,54 @@ try {
     }
     
     $jsonlResults = $jsonlResults | Sort-Object importance -Descending | Select-Object -First 8
+
+    # If keyword search has no hits (common for vague/Chinese prompts), still provide recent active memories.
+    $recentFallback = @()
+    if ($jsonlResults.Count -eq 0) {
+        $fallbackFiles = @(
+            (Join-Path $memoriesRoot "index\memory-index.jsonl"),
+            (Join-Path $memoriesRoot "index\summaries.jsonl"),
+            (Join-Path $memoriesRoot "index\decisions.jsonl")
+        )
+        foreach ($file in $fallbackFiles) {
+            if (Test-Path $file) {
+                Get-Content $file -Encoding UTF8 | Select-Object -Last 20 | ForEach-Object {
+                    if ($_.Trim()) {
+                        try {
+                            $entry = $_ | ConvertFrom-Json
+                            if ($entry.status -ne "archived" -and $entry.status -ne "purge_candidate") {
+                                $recentFallback += @{
+                                    id = $entry.id
+                                    type = $entry.type
+                                    summary = $entry.summary
+                                    importance = $entry.importance
+                                    createdAt = $entry.createdAt
+                                    rawPath = $entry.rawPath
+                                }
+                            }
+                        } catch { }
+                    }
+                }
+            }
+        }
+        $recentFallback = $recentFallback | Sort-Object createdAt -Descending | Select-Object -First 5
+    }
     
     # Build contextModification
     $contextParts = @()
     $contextParts += "=== Memory System Startup Index ==="
+    $contextParts += "readId=$readId"
+    $contextParts += "[Instruction] AI MUST mention this readId in the first response to confirm TaskStart memory was injected."
     $contextParts += ""
+
+    if ($startupContent) {
+        $contextParts += "[Startup Index]"
+        $contextParts += $startupContent
+        $contextParts += ""
+    } else {
+        $contextParts += "[WARNING] startup-index.json not found or empty."
+        $contextParts += ""
+    }
     
     if ($unnamedWarning) {
         $contextParts += $unnamedWarning
@@ -162,11 +248,11 @@ try {
     }
     
     if ($dupWarnings.Count -gt 0) {
-        $contextParts += "[DUPLICATE WORK DETECTED — 可能的重複工作]"
+        $contextParts += "[DUPLICATE WORK DETECTED - possible repeated work]"
         foreach ($dw in $dupWarnings) {
             $contextParts += "- [$($dw.type)] $($dw.summary) (created: $($dw.createdAt), matchScore: $($dw.matchScore))"
         }
-        $contextParts += "[建議] 如果此任務與上述記錄重複，請考慮是否仍有必要重新執行。"
+        $contextParts += "[Suggestion] If this task duplicates records above, consider whether rework is necessary."
         $contextParts += ""
     }
     
@@ -183,24 +269,45 @@ try {
         }
         $contextParts += ""
     }
+    elseif ($recentFallback.Count -gt 0) {
+        $contextParts += "[Recent Active Memories - fallback when no keyword match]"
+        foreach ($r in $recentFallback) {
+            $rawHint = if ($r.rawPath) { " (full session: $($r.rawPath))" } else { "" }
+            $contextParts += "- [$($r.type)] $($r.summary) (created: $($r.createdAt), importance: $($r.importance))$rawHint"
+        }
+        $contextParts += ""
+    }
     
     if ($logsContent) {
         $contextParts += "[Recent Task Logs (top 10)]"
         $contextParts += $logsContent
     }
     
-    $contextModification = $contextParts -join "`n"
+    $contextModification = Truncate-Text -Text ($contextParts -join "`n") -MaxChars 16000
     
-    @{
+    $result = @{
         cancel = $false
         contextModification = $contextModification
+        injectContext = $contextModification
         errorMessage = ""
-    } | ConvertTo-Json -Compress -Depth 10
+    }
+
+    $json = $result | ConvertTo-Json -Compress -Depth 10
+    $bytes = [System.Text.Encoding]::UTF8.GetBytes($json)
+    $stdout = [System.Console]::OpenStandardOutput()
+    $stdout.Write($bytes, 0, $bytes.Length)
+    $stdout.Close()
     
 } catch {
-    @{
+    $errorResult = @{
         cancel = $false
         contextModification = ""
+        injectContext = ""
         errorMessage = "[TaskStart Hook Error] $($_.Exception.Message)"
-    } | ConvertTo-Json -Compress
+    }
+    $json = $errorResult | ConvertTo-Json -Compress
+    $bytes = [System.Text.Encoding]::UTF8.GetBytes($json)
+    $stdout = [System.Console]::OpenStandardOutput()
+    $stdout.Write($bytes, 0, $bytes.Length)
+    $stdout.Close()
 }

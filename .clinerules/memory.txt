@@ -1,0 +1,47 @@
+# AI Agent Space - 專案記憶
+
+## 專案簡介
+AI Agent Space 是一個以「自我改進 AI 助手」為核心的工作空間，透過 Cline 的 Hook 機制與記憶系統來實現長期上下文保留與自動化記憶管理。
+
+## 技術棧
+- **語言**: Python, JavaScript/Node.js, PowerShell
+- **工具**: Cline (VS Code Extension), Git, GitHub CLI (gh)
+- **執行環境**: Windows 11, PowerShell, Node.js
+- **記憶系統**: 檔案式 JSONL + JSON 索引，無向量資料庫
+- **Hook 系統**: PowerShell 腳本，透過 stdin/stdout JSON 與 Cline 通訊
+
+## 目錄結構
+```
+AIagentSpace/
+├── 主要引導.md              # 總入口與文件地圖
+├── AGENT_BOOTSTRAP.md        # 短版必讀入口
+├── 記憶系統規格.md           # 記憶系統完整規格
+├── DEVELOPMENT_PRINCIPLES.md # 開發原則
+├── .clinerules/
+│   ├── memory.txt            # 本檔 - 專案記憶（手動維護）
+│   └── hooks/                # Cline 原生 Hook 腳本目錄
+├── Cline/
+│   ├── Hooks/                # 外部 PowerShell Hook（TaskStart, TaskComplete）
+│   └── Rules/
+│       └── .clinerules.md    # AI 行為規則
+├── Memories/
+│   ├── raw/                  # 原始對話保存
+│   ├── index/                # 摘要索引（JSONL + JSON）
+│   ├── projects/             # 專案級記憶
+│   ├── logs/                 # 任務日誌
+│   └── scripts/              # 驗證腳本
+└── Memoreis/                 # （注意：此為誤植，應為 Memories）
+```
+
+## 開發規範與慣例
+1. **語言**: 繁體中文（zh-TW），直接、務實、可執行
+2. **記憶寫入**: 每次任務結束前評估；importance >= 0.7 必須寫入正式索引
+3. **讀取優先序**: startup-index.json → agent-profile → AGENTS.md → 專案記憶 → 決策/警告 → 偏好
+4. **Token 預算**: 前置總讀取硬上限 5000 tokens
+5. **Hook 輸出格式**: JSON，含 `cancel`、`contextModification`、`errorMessage` 欄位
+6. **驗證**: 修改記憶索引後執行 `Memories/scripts/validate-memory.ps1`
+
+## 重要路徑
+- 記憶根目錄: `C:\Users\s7514\source\repos\AIagentSpace\Memories`
+- Hook 目錄 (外部): `C:\Users\s7514\Documents\Cline\Hooks\`
+- Hook 目錄 (專案): `C:\Users\s7514\source\repos\AIagentSpace\.clinerules\hooks\`

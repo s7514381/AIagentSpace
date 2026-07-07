@@ -1,0 +1,58 @@
+@'
+# UserPromptSubmit Hook - 本地記憶輕量注入
+# 觸發時機：使用者提交新 Prompt
+# 功能：自動讀取 .clinerules/memory.txt 的專案記憶，注入到對話上下文
+#       比 TaskStart 更輕量，僅注入 memory.txt 內容
+# 輸出格式：JSON { cancel, contextModification, injectContext, errorMessage }
+# 系統：Windows (PowerShell)
+'@
+
+$agentSpace = "C:\Users\s7514\source\repos\AIagentSpace"
+$memoryFilePath = Join-Path $agentSpace ".clinerules\memory.txt"
+$newLine = "`r`n"
+
+try {
+    $memoryContent = ""
+    if (Test-Path $memoryFilePath) {
+        $memoryContent = Get-Content $memoryFilePath -Raw -Encoding UTF8
+    } else {
+        $memoryContent = "[WARNING] .clinerules/memory.txt does not exist. Please create it."
+    }
+
+    $contextParts = @()
+    $contextParts += "=== Project Memory Reference (from .clinerules/memory.txt) ==="
+    $contextParts += ""
+    $contextParts += $memoryContent
+    $contextParts += ""
+    $contextParts += "---"
+    $contextParts += "This context was auto-injected by .clinerules/hooks/UserPromptSubmit"
+    $contextParts += "Full memory index is handled by external TaskStart Hook (Cline/Hooks/TaskStart.ps1)"
+
+    $injectContext = $contextParts -join $newLine
+
+    $result = @{
+        cancel = $false
+        contextModification = $injectContext
+        injectContext = $injectContext
+        errorMessage = ""
+    }
+
+    $json = $result | ConvertTo-Json -Compress -Depth 10
+    $bytes = [System.Text.Encoding]::UTF8.GetBytes($json)
+    $stdout = [System.Console]::OpenStandardOutput()
+    $stdout.Write($bytes, 0, $bytes.Length)
+    $stdout.Close()
+
+} catch {
+    $errorResult = @{
+        cancel = $false
+        contextModification = ""
+        injectContext = ""
+        errorMessage = "[UserPromptSubmit Hook Error] $($_.Exception.Message)"
+    }
+    $json = $errorResult | ConvertTo-Json -Compress
+    $bytes = [System.Text.Encoding]::UTF8.GetBytes($json)
+    $stdout = [System.Console]::OpenStandardOutput()
+    $stdout.Write($bytes, 0, $bytes.Length)
+    $stdout.Close()
+}

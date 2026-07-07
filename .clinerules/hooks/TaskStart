@@ -1,0 +1,78 @@
+@'
+# TaskStart Hook - 本地記憶與長文本上下文注入
+# 觸發時機：每次任務開始
+# 功能：自動讀取 .clinerules/memory.txt 的專案記憶，注入到 Cline 對話上下文
+# 輸出格式：JSON { cancel, contextModification, injectContext, errorMessage }
+# 系統：Windows (PowerShell)
+'@
+
+$agentSpace = "C:\Users\s7514\source\repos\AIagentSpace"
+$memoryFilePath = Join-Path $agentSpace ".clinerules\memory.txt"
+$clinerulesDir = Join-Path $agentSpace ".clinerules"
+$rulesPath = Join-Path $agentSpace "Cline\Rules\.clinerules.md"
+$newLine = "`r`n"
+
+try {
+    $memoryContent = ""
+    if (Test-Path $memoryFilePath) {
+        $memoryContent = Get-Content $memoryFilePath -Raw -Encoding UTF8
+    } else {
+        $memoryContent = "[WARNING] .clinerules/memory.txt does not exist. Please create it."
+    }
+
+    $clinerulesStructure = ""
+    if (Test-Path $clinerulesDir) {
+        $items = Get-ChildItem $clinerulesDir -Recurse -File | ForEach-Object { $_.FullName.Replace($agentSpace, "").TrimStart("\") }
+        $clinerulesStructure = $items -join $newLine
+    }
+
+    $rulesContent = ""
+    if (Test-Path $rulesPath) {
+        $rulesLines = Get-Content $rulesPath -Encoding UTF8 | Select-Object -First 30
+        $rulesContent = $rulesLines -join $newLine
+    }
+
+    $contextParts = @()
+    $contextParts += "=== Local Project Memory Injection (from .clinerules/memory.txt) ==="
+    $contextParts += ""
+    $contextParts += $memoryContent
+    $contextParts += ""
+    $contextParts += "=== .clinerules/ Directory Structure ==="
+    $contextParts += $clinerulesStructure
+    $contextParts += ""
+    $contextParts += "=== AI Behavior Rules Summary (from Cline/Rules/.clinerules.md) ==="
+    $contextParts += $rulesContent
+    $contextParts += ""
+    $contextParts += "=== Memory Injection Complete ==="
+    $contextParts += "This context was auto-injected by .clinerules/hooks/TaskStart"
+    $contextParts += "To update project memory, edit .clinerules/memory.txt"
+
+    $injectContext = $contextParts -join $newLine
+
+    $result = @{
+        cancel = $false
+        contextModification = $injectContext
+        injectContext = $injectContext
+        errorMessage = ""
+    }
+
+    # Write to stdout as raw bytes to avoid encoding issues
+    $json = $result | ConvertTo-Json -Compress -Depth 10
+    $bytes = [System.Text.Encoding]::UTF8.GetBytes($json)
+    $stdout = [System.Console]::OpenStandardOutput()
+    $stdout.Write($bytes, 0, $bytes.Length)
+    $stdout.Close()
+
+} catch {
+    $errorResult = @{
+        cancel = $false
+        contextModification = ""
+        injectContext = ""
+        errorMessage = "[TaskStart Hook Error] $($_.Exception.Message)"
+    }
+    $json = $errorResult | ConvertTo-Json -Compress
+    $bytes = [System.Text.Encoding]::UTF8.GetBytes($json)
+    $stdout = [System.Console]::OpenStandardOutput()
+    $stdout.Write($bytes, 0, $bytes.Length)
+    $stdout.Close()
+}
